@@ -1,0 +1,126 @@
+import flet as ft
+
+
+def main(page: ft.Page):
+    page.title = "Practice For Final Hands-on"
+    page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
+    page.vertical_alignment = ft.MainAxisAlignment.CENTER
+    page.bgcolor = ft.Colors.BLUE_GREY
+
+    user_field = ft.TextField(
+        label="Username",
+        hint_text="Username",
+        width=250,
+    )
+
+    pass_field = ft.TextField(
+        label="Password",
+        hint_text="Password",
+        password=True,
+        width=250,
+    )
+
+    gender_dropdown = ft.Dropdown(
+        label="Gender",
+        hint_text="Gender",
+        options=[
+            ft.dropdown.Option("MALE"),
+            ft.dropdown.Option("FEMALE"),
+            ft.dropdown.Option("LGBTQ++"),
+        ],
+        width=250,
+    )
+
+    # AGE SLIDER (FIXED)
+    age_slider = ft.Slider(
+        min=1,
+        max=100,
+        divisions=99,
+        label="{value}",
+        value=1,  # important fix
+        width=250,
+    )
+
+    result_text = ft.Text(
+        "",
+        size=16,
+        weight=ft.FontWeight.BOLD,
+    )
+
+    def save_data(_):
+
+        if (
+            user_field.value == ""
+            or pass_field.value == ""
+            or gender_dropdown.value is None
+        ):
+            result_text.value = "Please enter all fields!"
+            result_text.color = "red"
+
+        elif not user_field.value.replace(" ", "").isalpha():
+            result_text.value = "Username must contain letters only!"
+            result_text.color = "red"
+
+        elif len(pass_field.value) < 6:
+            result_text.value = "Password must have at least 6 characters!"
+            result_text.color = "red"
+
+        else:
+            age_value = int(age_slider.value)
+
+            print("========== USER DATA ==========")
+            print(f"Username : {user_field.value}")
+            print(f"Password : {pass_field.value}")
+            print(f"Gender   : {gender_dropdown.value}")
+            print(f"Age      : {age_value}")
+            print("================================")
+
+            result_text.value = "Data saved successfully!"
+            result_text.color = "green"
+
+        page.update()
+
+    def exit_app(_):
+        page.window.destroy()
+
+    exit_btn = ft.ElevatedButton(
+        content=ft.Text("Exit"),
+        width=250,
+        on_click=exit_app,
+    )
+
+    save_btn = ft.ElevatedButton(
+        content=ft.Text("Save"),
+        width=250,
+        on_click=save_data,
+    )
+
+    page.add(
+        ft.Row(
+            [user_field],
+            alignment=ft.MainAxisAlignment.CENTER,
+        ),
+        ft.Row(
+            [pass_field],
+            alignment=ft.MainAxisAlignment.CENTER,
+        ),
+
+        ft.Row(
+            [gender_dropdown],
+            alignment=ft.MainAxisAlignment.CENTER,
+        ),
+
+        ft.Text("Age", size=16, weight=ft.FontWeight.BOLD),
+
+        age_slider,
+
+        ft.Row(
+            [save_btn, exit_btn],
+            alignment=ft.MainAxisAlignment.CENTER,
+        ),
+
+        result_text,
+    )
+
+
+ft.app(target=main)
