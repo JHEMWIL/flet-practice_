@@ -1,0 +1,133 @@
+import flet as ft
+
+def main(page: ft.Page):
+    page.title = "Registration Form"
+    page.window_width = 500
+    page.window_height = 750
+    page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
+    page.scroll = ft.ScrollMode.AUTO
+    page.bgcolor = ft.Colors.WHITE
+
+    name_field = ft.TextField(
+        label="Full Name",
+        width=300
+    )
+
+    gender_field = ft.Dropdown(
+        label="Gender",
+        width=300,
+        options=[
+            ft.dropdown.Option("Male"),
+            ft.dropdown.Option("Female"),
+        ]
+    )
+
+    bsit_cb = ft.Checkbox(label="BSIT")
+    bscs_cb = ft.Checkbox(label="BSCS")
+    bsed_cb = ft.Checkbox(label="BSED")
+    bsba_cb = ft.Checkbox(label="BSBA")
+    bscrim_cb = ft.Checkbox(label="BSCRIM")
+
+    address_field = ft.TextField(
+        label="Address",
+        width=300,
+        multiline=True,
+        min_lines=2,
+        max_lines=3,
+    )
+
+    result_text = ft.Text(
+        "",
+        size=16,
+        weight=ft.FontWeight.BOLD,
+    )
+
+    def save_data(_):
+        courses = []
+
+        if bsit_cb.value:
+            courses.append("BSIT")
+        if bscs_cb.value:
+            courses.append("BSCS")
+        if bsed_cb.value:
+            courses.append("BSED")
+        if bsba_cb.value:
+            courses.append("BSBA")
+        if bscrim_cb.value:
+            courses.append("BSCRIM")
+
+        if (
+            not name_field.value
+            or not gender_field.value
+            or len(courses) == 0
+            or not address_field.value
+        ):
+            result_text.value = "Please complete all fields!"
+            result_text.color = ft.Colors.RED
+
+        elif not name_field.value.replace(" ", "").isalpha():
+            result_text.value = "Name must contain letters only!"
+            result_text.color = ft.Colors.RED
+
+        else:
+            result_text.value = (
+                f"Registration Successful!\n\n"
+                f"Name: {name_field.value}\n"
+                f"Gender: {gender_field.value}\n"
+                f"Courses: {', '.join(courses)}\n"
+                f"Address: {address_field.value}"
+            )
+
+            result_text.color = ft.Colors.GREEN
+
+            print("===== STUDENT RECORD =====")
+            print("Name      :", name_field.value)
+            print("Gender    :", gender_field.value)
+            print("Courses   :", ", ".join(courses))
+            print("Address   :", address_field.value)
+            print("==========================")
+
+        page.update()
+
+    def exit_app(_):
+        page.window.close()
+
+    save_btn = ft.ElevatedButton(
+        content="Save",
+        width=100,
+        on_click=save_data,
+    )
+
+    exit_btn = ft.ElevatedButton(
+        content="Exit",
+        width=100,
+        on_click=exit_app,
+    )
+
+    page.add(
+        name_field,
+        gender_field,
+
+
+        ft.Text(
+            "Courses",
+            size=16,
+            weight=ft.FontWeight.BOLD,
+        ),
+
+        ft.Row([bsit_cb], alignment=ft.MainAxisAlignment.CENTER),
+        ft.Row([bscs_cb], alignment=ft.MainAxisAlignment.CENTER),
+        ft.Row([bsed_cb], alignment=ft.MainAxisAlignment.CENTER),
+        ft.Row([bsba_cb], alignment=ft.MainAxisAlignment.CENTER),
+        ft.Row([bscrim_cb], alignment=ft.MainAxisAlignment.CENTER),
+
+        address_field,
+
+        ft.Row(
+            [save_btn, exit_btn],
+            alignment=ft.MainAxisAlignment.CENTER,
+        ),
+
+    )
+
+ft.app(target=main)
